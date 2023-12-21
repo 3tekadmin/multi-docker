@@ -1,0 +1,15 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t devopsgru/react-test -f ./client/dockerfile.dev ./client
+
+script:
+  - docker run devopsgru/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t devopsgru/multi-client ./client
+  - docker build -t devopsgru/multi-nginx ./nginx
+  - docker build -t devopsgru/multi-server ./server
+  - docker build -t devopsgru/multi-worker ./worker
